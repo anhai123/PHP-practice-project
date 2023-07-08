@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/login.css">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css">
+    <link rel="stylesheet" href="views/css/login.css">
     <title>Practice</title>
 </head>
 
@@ -14,7 +15,7 @@
     <div class="wrapper">
         <div class="form signup">
             <header>REGISTER</header>
-            <form action="signup.php" method="post">
+            <form action="?mod=auth&act=register" method="post">
                 <div class="error-txt"></div>
                 <div class="name-details">
                     <div class="field input">
@@ -56,9 +57,9 @@
 	                ?>
                 </div> -->
             </form>
-            <div class="link">You have account? <a href="../index.php">Login now</a></div>
+            <div class="link">You have account? <a href="/PHP-practice-project/?mod=auth&act=viewLogin">Login now</a></div>
         </div>
     </div>
-    <script src="../javascript/showPass.js"></script>
+    <script src="views/javascript/showPass.js"></script>
 </body>
 </html>
