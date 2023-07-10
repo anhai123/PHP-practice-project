@@ -7,4 +7,5 @@ CREATE TABLE `user` (
     `phoneNumber` char(255) COLLATE utf8_unicode_ci DEFAULT NULL,
     `address` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
     `status` int(1) DEFAULT NULL
+    `role` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'user',
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
