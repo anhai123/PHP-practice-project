@@ -1,35 +1,34 @@
 <?php
-
 require_once 'base.php';
 require_once 'entity/E_user.php';
-class UserController extends Base
+class User extends Base
 {
-   
-
-    public function viewHomepage() {
-        require_once(__DIR__ . "/../views/home.php");
-    }
     public function findById($id) {
-        $userModel = new User();
-        $user = $userModel->findById($id);
+        $query=mysqli_query($this->conn,"SELECT * FROM user where id_user='" . $id . "'");
+       
+         while ($row = $query->fetch_assoc()) {
+        
+        $user = new E_user($row['id_user'],$row['firstName'], $row['lastName'], $row['email'], $row['phoneNumber']);
+       
+    }
         return $user;
     }
      function store($data)
      {}
     function edit($id, $data){
-        
+        $updateField = implode(',', $data);
+
+        if($updateField && $id) {
+            $sqlQuery = "UPDATE user SET $updateField WHERE id_user='" . $id . "'";		
+            $result = false;
+            if ($this->conn->query($sqlQuery) === TRUE) {
+                $result = true;
+            }
+            return $result;
+        }
     }
      function delete($id){}
      function list(){
-     
-        $query=mysqli_query($this->conn,"SELECT * FROM user");
-        $users = array();
-        while ($row = $query->fetch_assoc()) {
-            $data[] = $row;
-            $user = new E_user($row['id_user'],$row['firstName'], $row['lastName'], $row['email'], $row['phoneNumber']);
-            $users[] = $user;
-        }
-        require_once(__DIR__ . '/../views/admin.php');
      }
     
 };

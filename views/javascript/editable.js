@@ -4,6 +4,7 @@ $(document).ready(function () {
     onEdit: function (columnsEd) {
       var empId = columnsEd[0].childNodes[1].innerHTML;
       var firstName = columnsEd[0].childNodes[3].innerHTML;
+      console.log(firstName);
       var lastName = columnsEd[0].childNodes[5].innerHTML;
       var email = columnsEd[0].childNodes[7].innerHTML;
       var phoneNumber = columnsEd[0].childNodes[9].innerHTML;

@@ -16,58 +16,13 @@ class AdminController
         $this->modelAdmin = new Admin();
         
     }
-
+    public function viewAdmin() {
+        require_once(__DIR__ . "/../views/admin.php");
+    }
     function list(){
         $users = $this->modelAdmin->list();
         require_once(__DIR__ . '/../views/admin.php');
      }
-
-
-    function store()
-    {
-        $name = isset($_POST['name']) ? $_POST['name'] : '';
-        $description = isset($_POST['description']) ? $_POST['description'] : '';
-        $image_url = isset($_POST['img_url']) ? $_POST['img_url'] : '';
-
-        // Validate
-        $validate = [];
-        if ($name == '') {
-            $validate['name'] = 'Name is required';
-        }
-        if ($description == '') {
-            $validate['description'] = 'Description is required';
-        }
-        if ($image_url == '') {
-            $validate['img_url'] = 'Image is required';
-        }
-        if (!empty($validate)) {
-            $_SESSION['validate'] = $validate;
-            $_SESSION['input'] = $_POST;
-            header('Location: ?mod=restaurant&act=add');
-            return;
-        }
-
-        $input = [
-            'name' => $name,
-            'description' => $description,
-            'img_url' => $image_url,
-            'user_id' => $this->user_id
-        ];
-
-        $status = $this->modelAdmin->store($input);
-        if ($status == true) {
-            $_SESSION['success'] = 'Thêm mới thành công';
-            $data = array(
-                "message"	=> "Record Updated",	
-                "status" => 1
-            );
-            echo json_encode($data);
-            header('Location: ?mod=restaurant&act=list');
-        } else {
-            $_SESSION['fail'] = 'Thêm mới thất bại';
-            header('Location: ?mod=restaurant&act=add');
-        }
-    }
 
     function delete()
     {
@@ -92,15 +47,6 @@ class AdminController
         }
     }
 
-    function isAuthor($restaurantId)
-    {
-        $restaurant = $this->model->findById($restaurantId);
-        if ($restaurant['user_id'] == $this->user_id) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     function add()
     {
@@ -109,30 +55,43 @@ class AdminController
     function edit() {
         $array = array();
 if ($_POST['action'] == 'edit' && $_POST['id']) {	
-if(isset($_POST['firstName'])) { $array[] = "firstName='".$_POST['firstName']."'"; }
-if(isset($_POST['lastName'])) { $array[] = "lastName='".$_POST['lastName']."'";}
-if(isset($_POST['email'])) { $array[] = "email='".$_POST['email']."'"; }
-if(isset($_POST['phoneNumber'])) { $array[] = "phoneNumber='".$_POST['phoneNumber']."'"; }
+
+    $firstName= isset($_POST['firstName']) && $_POST['firstName'] == true ?trim($_POST['firstName'], " ") : '';
+    $lastName= isset($_POST['lastName']) && $_POST['lastName'] == true ?trim($_POST['lastName'], " ") : '';
+    $email= isset($_POST['email']) && $_POST['email'] == true ? trim($_POST['email'], " ") : '';
+    $phoneNumber= isset($_POST['phoneNumber']) && $_POST['phoneNumber'] == true ? trim($_POST['phoneNumber'], " ") : '';
+ 
+
+if(isset($_POST['firstName'])) { $array[] = "firstName='".$firstName."'"; }
+if(isset($_POST['lastName'])) { $array[] = "lastName='".$lastName."'";}
+if(isset($_POST['email'])) { $array[] = "email='".$email."'"; }
+if(isset($_POST['phoneNumber'])) { $array[] = "phoneNumber='".$phoneNumber."'"; }
 if (count($array) == 0) { die("no object modified or other errors");}
-$firstName=isset($_POST['firstName'])?$_POST['firstName'] : '';
-$lastName=isset($_POST['lastName'])?$_POST['lastName'] : '';
-$email=isset($_POST['email'])?$_POST['email'] : '';
-$phoneNumber=isset($_POST['phoneNumber'])?$_POST['phoneNumber'] : '';
+
 $validate = [];
-if ($firstName == '') {
+if ($firstName == '' ) {
     $validate['firstName'] = 'First name is required';
 }
+
 if ($lastName == '') {
     $validate['lastName'] = 'Last name is required';
 }
-if ($email == '') {
-    $validate['email'] = 'email is required';
+if ($email == ''  ) {
+    $validate['email'] = 'Email is required';
+}
+else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $validate['email'] = 'Not a valid email';
 }
 if ($phoneNumber == '') {
     $validate['phoneNumber'] = 'Phone number is required';
 }
+else  {
+    if(!preg_match('/^[0-9]{10}+$/', $phoneNumber)) {
+        $validate['phoneNumber'] = 'Phone number is not valid';
+    }
+
+}
 if (!empty($validate)) {
-    $validate['id'] = $_POST['id'];
     $_SESSION['validate'] = $validate;
     $_SESSION['input'] = $_POST;
     $_SESSION['error'] = 'User updated failed';
@@ -167,7 +126,5 @@ else {
 
 }
     }
-    public function viewAdmin() {
-        require_once(__DIR__ . "/../views/admin.php");
-    }
+
 }

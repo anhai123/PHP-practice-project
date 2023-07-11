@@ -1,11 +1,15 @@
 <?php
+    if (!isset($_SESSION['id']) ||(trim ($_SESSION['id']) == '')) {
+		header('location: ?mod=auth&act=viewlogin');
+		exit();
+	}
 $validate = $_SESSION['validate'] ?? [];
 $input = $_SESSION['input'] ?? [];
 unset($_SESSION['validate']);
 unset($_SESSION['input']);
-// $string_version = implode(',', $validate);
-// echo $string_version;
-
+$string_version = implode( ",\n",$validate);
+// echo $_SESSION['error'];
+// echo implode("<br>",$validate);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,14 +25,26 @@ unset($_SESSION['input']);
 <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
   <style>
 table {
-    background-color: #181818;
+    background-color: #00B98E;
 }
 table, .table {
     color: #fff;
 }
+
+.button-logout{
+    background-color: #00d6b091; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+  } 
 </style>
 </head>
 <body>
+<div><button class="button-logout"> <a href="?mod=auth&act=logout">Logout</a></div>
 	<br><br/>
 <table id="editableTable" class="table table-bordered">
 	<thead>
@@ -41,29 +57,22 @@ table, .table {
 		</tr>
 	</thead>
 	<tbody>
-
-
 		   <?php foreach ($users as $user) {
         ?>
   <tr id=<?php echo $user->getId() ?>>
   <td><?php echo $user->getId(); ?></td>
-		   <td><?php echo $user->getFirstName(); ?>
-           <?php if (isset($validate['firstName']) && $user->getId() == $validate['id']  ) : ?>
-                        <p class="text-danger"><?php echo $validate['firstName']; ?></p>
-                    <?php endif; ?></td>
-		   <td><?php echo $user->getLastName(); ?>
-        
-           <?php if (isset($validate['lastName']) && $user->getId() == $validate['id']  ) : ?>
-                        <p class="text-danger"><?php echo $validate['lastName']; ?></p>
-                    <?php endif; ?></td></td>
-		   <td><?php echo $user->getEmail(); ?>
-           <?php if (isset($validate['email']) && $user->getId() == $validate['id']  ) : ?>
-                        <p class="text-danger"><?php echo $validate['email']; ?></p>
-                    <?php endif; ?></td></td>
-		   <td><?php echo $user->getPhoneNumber(); ?>
-           <?php if (isset($validate['phoneNumber']) && $user->getId() == $validate['id']  ) : ?>
-                        <p class="text-danger"><?php echo $validate['phoneNumber']; ?></p>
-                    <?php endif; ?></td></td>  				   				   				  
+		   <td title="<?php if (isset($validate['firstName']) && $user->getId() == $input['id']  ) : ?>
+                        <?php echo $validate['firstName']; ?>
+                    <?php endif; ?>"><?php echo $user->getFirstName(); ?></td>
+		   <td title="<?php if (isset($validate['lastName']) && $user->getId() == $input['id'] ) : ?>
+                        <?php echo $validate['lastName']; ?>
+                    <?php endif; ?>"><?php echo $user->getLastName(); ?></td>               
+		   <td title="<?php if (isset($validate['email']) && $user->getId() == $input['id'] ) : ?>
+                       <?php echo $validate['email']; ?>
+                    <?php endif; ?>"><?php echo $user->getEmail(); ?></td>
+		   <td title="<?php if (isset($validate['phoneNumber']) && $user->getId() == $input['id']  ) : ?>
+                        <?php echo $validate['phoneNumber']; ?>
+                    <?php endif; ?>"><?php echo $user->getPhoneNumber(); ?></td>  				   				   				  
 		   </tr>
         <?php
         }
@@ -85,7 +94,7 @@ table, .table {
         });
         // Check if there is an error message in the session
         <?php if (isset($_SESSION['error'])) : ?>
-            notyf.error('<?php echo $_SESSION['error']; ?>');
+            notyf.error('<?php echo $_SESSION['error'];  echo "<br>"; echo implode("<br>",$validate); ?>');
             <?php unset($_SESSION['error']);
             ?>
         <?php endif; ?>

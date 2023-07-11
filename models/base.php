@@ -16,7 +16,7 @@ abstract class Base
     public function login()
     {
         if(isset($_POST['login'])){
-            session_start();
+            
             $email=$_POST['email'];
             $password=md5($_POST['password']);
     
@@ -28,7 +28,7 @@ abstract class Base
             }
             else{
                 $row=mysqli_fetch_array($query);
-                echo "Session variables about user are set.";
+                echo $row['role'];
                 setcookie("email", $row['email'], time() + (86400 * 30)); 
                 setcookie("password", $row['password'], time() + (86400 * 30)); 
                 
@@ -37,11 +37,13 @@ abstract class Base
                 }
                 $_SESSION['id']=$row['id_user'];
 
-                // if($row['role'] == 'admin' ) {
+                if($row['role'] == 'admin' ) {
+                    header('Location: ?mod=admin&act=viewAdminPage');
+                }
+                else if ($row['role'] == 'user') {
 
-                // }
-                // else if ()
-                header('location: ?mod=homepage&act=viewHomepage');
+                    header('Location: ?mod=user&act=viewHomepage');
+                }
             }
         }
         else{

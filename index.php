@@ -27,7 +27,7 @@ switch ($mod) {
         break;
     case 'auth':
         require_once('models/User.php');
-        $userController = new UserController();
+        $userController = new User();
         switch ($act) {
             case 'login':
                 $userController->login();
@@ -49,12 +49,15 @@ switch ($mod) {
                 break;
         }
    break;
-   case 'homepage':
-    require_once('models/User.php');
+   case 'user':
+    require_once('controllers/UserController.php');
     $userController = new UserController();
     switch ($act) {
         case 'viewHomepage':
-            $userController->list();
+            $userController->viewHomepage();
+            break;
+        case 'updateInformation':
+            $userController->edit();
             break;
         default:
             $userController->viewHomepage();
