@@ -1,13 +1,22 @@
 <?php
-require_once(__DIR__ . '/../models/User.php');
-class UserController
-{
+require_once 'conn.php';
+abstract class Base
+{   
+    protected $conn;
+    public function __construct()
+    {
+        $db = new dbConnect();
+        $this->conn = $db->getConnection();
+    }
+    abstract function store($data);
+    abstract function edit($id, $data);
+    abstract function delete($id);
+    abstract function list();
+    abstract function findById($id);
     public function login()
     {
         if(isset($_POST['login'])){
-            session_start();
-            $dbConnect = new dbConnect();
-    
+            
             $email=$_POST['email'];
             $password=md5($_POST['password']);
     
@@ -19,19 +28,26 @@ class UserController
             }
             else{
                 $row=mysqli_fetch_array($query);
-    
+                echo $row['role'];
                 setcookie("email", $row['email'], time() + (86400 * 30)); 
                 setcookie("password", $row['password'], time() + (86400 * 30)); 
-    
+                
                 if(isset($_POSTp['remember'])){
                     $row['id'] = 1;
                 }
                 $_SESSION['id']=$row['id_user'];
-                header('location: ?mod=homepage&act=viewHomepage');
+
+                if($row['role'] == 'admin' ) {
+                    header('Location: ?mod=admin&act=viewAdminPage');
+                }
+                else if ($row['role'] == 'user') {
+
+                    header('Location: ?mod=user&act=viewHomepage');
+                }
             }
         }
         else{
-            header('location: ../index.php');
+            header('location: ?mod=auth&act=viewlogin');
             $_SESSION['message']="Please Login!";
         }
     }
@@ -81,28 +97,11 @@ class UserController
         header('location: ?mod=auth&act=viewLogin');
     
     }
-
-    public function viewLogin() {
-        require_once(__DIR__ . "/../views/login.php");
-    }
-    public function viewHomepage() {
-        require_once(__DIR__ . "/../views/home.php");
-    }
-
     public function viewRegister() {
         require_once(__DIR__ . "/../views/register.php");
     }
 
-    public function findById($id) {
-        $userModel = new User();
-        $user = $userModel->findById($id);
-        return $user;
+    public function viewLogin() {
+        require_once(__DIR__ . "/../views/login.php");
     }
-
-     function store($data)
-     {}
-    function edit($id, $data){}
-     function delete($id){}
-     function list(){}
-    
-};
+}
