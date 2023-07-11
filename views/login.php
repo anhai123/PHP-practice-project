@@ -32,15 +32,11 @@
                         value="<?php if (isset($_COOKIE["password"])){echo $_COOKIE["password"];}?>"
                         required
                     >
-                    <i class="fas fa-eye"></i>
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" 
                         name="remember" 
                         class="remember-me" 
-                        <?php 
-                            if (isset($_COOKIE["email"]) && isset($_COOKIE["password"])){ echo "checked"; }   
-                        ?>
                     >
                     <label for="remember-me">Remember-me</label>
                 </div>

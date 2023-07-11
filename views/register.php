@@ -38,12 +38,10 @@
                 <div class="field input">
                     <label>Password</label>
                     <input type="password" name="pass1" placeholder="Enter password" required>
-                    <i class="fas fa-eye"></i>
                 </div>
                 <div class="field input">
                     <label>Confirm password</label>
                     <input type="password" name="pass2" placeholder="Confirm password" required>
-                    <i class="fas fa-eye"></i>
                 </div>
                 <div class="field button">
                     <input type="submit" name="signup" value="Register">
