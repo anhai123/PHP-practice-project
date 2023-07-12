@@ -13,6 +13,14 @@ abstract class Base
     abstract function delete($id);
     abstract function list();
     abstract function findById($id);
+
+    public function checkEmailDuplicate($email, $id) {
+        $query=mysqli_query($this->conn,"select * from `user` where email='{$email}' and id_user <> '{$id}'");
+        if(mysqli_num_rows($query)>0){
+           return false;
+        }
+        return true;
+    }
     public function login()
     {
         if(isset($_POST['login'])){

@@ -47,6 +47,12 @@ if ($email == ''  ) {
 else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $validate['email'] = 'Not a valid email';
 }
+else {
+    if(!$this->modelUser->checkEmailDuplicate($email, $_SESSION['id'])) {
+     $validate['email'] = 'Email has already exist';
+    }
+ }
+
 if ($phone == '') {
     $validate['phone'] = 'Phone number is required';
 }
