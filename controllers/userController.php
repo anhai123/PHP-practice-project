@@ -2,107 +2,87 @@
 require_once(__DIR__ . '/../models/User.php');
 class UserController
 {
-    public function login()
-    {
-        if(isset($_POST['login'])){
-            session_start();
-            $dbConnect = new dbConnect();
-    
-            $email=$_POST['email'];
-            $password=md5($_POST['password']);
-    
-            $query=mysqli_query($this->conn,"select * from `user` where email='{$email}' && password='{$password}'");
-    
-            if (mysqli_num_rows($query) == 0){
-                $_SESSION['message']="Login Failed. User not Found!";
-                header('location: ?mod=auth&act=viewLogin');
-            }
-            else{
-                $row=mysqli_fetch_array($query);
-    
-                setcookie("email", $row['email'], time() + (86400 * 30)); 
-                setcookie("password", $row['password'], time() + (86400 * 30)); 
-    
-                if(isset($_POSTp['remember'])){
-                    $row['id'] = 1;
-                }
-                $_SESSION['id']=$row['id_user'];
-                header('location: ?mod=homepage&act=viewHomepage');
-            }
-        }
-        else{
-            header('location: ../index.php');
-            $_SESSION['message']="Please Login!";
-        }
-    }
+    var $modelUser;
 
-    public function register()
-    {
-        session_start();
-        
-        $fname = mysqli_real_escape_string($this->conn, $_POST['fname']);
-        $lname = mysqli_real_escape_string($this->conn, $_POST['lname']);
-        $email = mysqli_real_escape_string($this->conn, $_POST['email']);
-        $phone = mysqli_real_escape_string($this->conn, $_POST['phone']);
-        $pass1 = mysqli_real_escape_string($this->conn, $_POST['pass1']);
-        $pass2 = mysqli_real_escape_string($this->conn, $_POST['pass2']);
-    
-        if (!empty($fname) && !empty($lname) && !empty($email) && !empty($phone) && !empty($pass1) && !empty($pass2)) {
-            $sql = mysqli_query($this->conn, "select * from user where email='{$email}'");
-            if(mysqli_num_rows($sql)>0){
-                $_SESSION['message'] = "Email already used";
-                header('location: ?mod=auth&act=viewRegister');
-            }else{
-                if($pass1 == $pass2){
-                    $pass1=md5($pass1);
-                    $sql2="insert into user(firstName, lastName, email, password, phoneNumber, address, status)
-                        value('$fname', '$lname', '$email', '$pass1','$phone','',0)";
-                    $query = mysqli_query($this->conn, $sql2);
-                    $_SESSION['message'] = "Create Account Success!";
-                    header('location: ?mod=auth&act=viewLogin');
-                }else{
-                    $_SESSION['message'] = "Password not match!";
-                    header('location: ?mod=auth&act=viewRegister');
-                }
-            }
-        }
-    }
 
-    public function logout()
+    function __construct()
     {
-        session_start();
-        session_destroy();
-    
-        if (isset($_COOKIE["user"]) AND isset($_COOKIE["pass"])){
-            setcookie("user", '', time() - (3600));
-            setcookie("pass", '', time() - (3600));
-        }
-    
-        header('location: ?mod=auth&act=viewLogin');
-    
+        $this->modelUser = new User();
     }
-
-    public function viewLogin() {
-        require_once(__DIR__ . "/../views/login.php");
-    }
-    public function viewHomepage() {
+    public function viewHomepage()
+    {
+        $user = $this->modelUser->findById($_SESSION['id']);
         require_once(__DIR__ . "/../views/home.php");
     }
 
-    public function viewRegister() {
-        require_once(__DIR__ . "/../views/register.php");
-    }
 
-    public function findById($id) {
-        $userModel = new User();
-        $user = $userModel->findById($id);
-        return $user;
-    }
 
-     function store($data)
-     {}
-    function edit($id, $data){}
-     function delete($id){}
-     function list(){}
-    
-};
+    function edit()
+    {
+        $array = array();
+
+
+        $fname = isset($_POST['fname']) && $_POST['fname'] == true ? trim($_POST['fname'], " ") : '';
+        $lname = isset($_POST['lname']) && $_POST['lname'] == true ? trim($_POST['lname'], " ") : '';
+        $email = isset($_POST['email']) && $_POST['email'] == true ? trim($_POST['email'], " ") : '';
+        $phone = isset($_POST['phone']) && $_POST['phone'] == true ? trim($_POST['phone'], " ") : '';
+
+
+        if (isset($_POST['fname'])) {
+            $array[] = "firstName='" . $fname . "'";
+        }
+        if (isset($_POST['lname'])) {
+            $array[] = "lastName='" . $lname . "'";
+        }
+        if (isset($_POST['email'])) {
+            $array[] = "email='" . $email . "'";
+        }
+        if (isset($_POST['phone'])) {
+            $array[] = "phoneNumber='" . $phone . "'";
+        }
+        if (count($array) == 0) {
+            die("no object modified or other errors");
+        }
+
+        $validate = [];
+        if ($fname == '') {
+            $validate['fname'] = 'First name is required';
+        }
+
+        if ($lname == '') {
+            $validate['lname'] = 'Last name is required';
+        }
+        if ($email == '') {
+            $validate['email'] = 'Email is required';
+        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $validate['email'] = 'Not a valid email';
+        } else {
+            if (!$this->modelUser->checkEmailDuplicate($email, $_SESSION['id'])) {
+                $validate['email'] = 'Email has already exist';
+            }
+        }
+
+        if ($phone == '') {
+            $validate['phone'] = 'Phone number is required';
+        } else {
+            if (!preg_match('/^[0-9]{10}+$/', $phone)) {
+                $validate['phone'] = 'Phone number is not valid';
+            }
+        }
+        if (!empty($validate)) {
+            $_SESSION['validate'] = $validate;
+            $_SESSION['input'] = $_POST;
+            $_SESSION['error'] = 'User updated failed';
+            header('Location: ?mod=user&act=viewHomepage');
+        } else {
+            $userUpdate = $this->modelUser->edit($_SESSION['id'], $array);
+            if ($userUpdate == true) {
+                $_SESSION['success'] = 'User updated successfully';
+                header('Location: ?mod=user&act=viewHomepage');
+            } else {
+                $_SESSION['error'] = 'User updated failed';
+                header('Location: ?mod=user&act=viewHomepage');
+            }
+        }
+    }
+}
