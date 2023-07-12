@@ -1,3 +1,16 @@
+
+
+<?php
+
+$validate = $_SESSION['validate'] ?? [];
+
+unset($_SESSION['validate']);
+$input = $_SESSION['input'] ?? [];
+unset($_SESSION['input']);
+$string_version = implode( ",\n",$validate);
+// echo $_SESSION['error'];
+// echo implode("<br>",$validate);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,6 +21,8 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css">
     <link rel="stylesheet" href="views/css/login.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
     <title>Practice</title>
 </head>
 
@@ -20,28 +35,28 @@
                 <div class="name-details">
                     <div class="field input">
                         <label>First Name</label>
-                        <input type="text" name="fname" placeholder="First Name" required>
+                        <input type="text" name="fname" placeholder="First Name" required  value="<?php echo isset($input['fname'])?$input['fname'] :''; ?>">
                     </div>
                     <div class="field input">
                         <label>Last Name</label>
-                        <input type="text" name="lname" placeholder="Last Name" required>
+                        <input type="text" name="lname" placeholder="Last Name" required value="<?php echo isset($input['lname'])?$input['lname'] :''; ?>">
                     </div>
                 </div>
                 <div class="field input">
                     <label>Email</label>
-                    <input type="text" name="email" placeholder="Enter your email" required>
+                    <input type="text" name="email" placeholder="Enter your email" required value="<?php echo isset($input['email']) ?$input['email']  :''; ?>">
                 </div>
                 <div class="field input">
                     <label>Phone number</label>
-                    <input type="text" name="phone" placeholder="Enter your phone" required>
+                    <input type="text" name="phone" placeholder="Enter your phone" required value="<?php echo isset($input['phone'])?$input['phone'] :''; ?>">
                 </div>
                 <div class="field input">
                     <label>Password</label>
-                    <input type="password" name="pass1" placeholder="Enter password" required>
+                    <input type="password" name="pass1" placeholder="Enter password" required value="<?php echo isset($input['pass1'])?$input['pass1'] :''; ?>">
                 </div>
                 <div class="field input">
                     <label>Confirm password</label>
-                    <input type="password" name="pass2" placeholder="Confirm password" required>
+                    <input type="password" name="pass2" placeholder="Confirm password" required value="<?php echo isset($input['pass2'])?$input['pass2'] :''; ?>">
                 </div>
                 <div class="field button">
                     <input type="submit" name="signup" value="Register">
@@ -59,5 +74,24 @@
         </div>
     </div>
     <script src="views/javascript/showPass.js"></script>
+    <script>
+        const notyf = new Notyf({
+            position: {
+                x: 'right',
+                y: 'top',
+            },
+        });
+        // Check if there is an error message in the session
+        <?php if (isset($_SESSION['error'])) : ?>
+            notyf.error('<?php echo $_SESSION['error'];  echo "<br>"; echo implode("<br>",$validate); ?>');
+            <?php unset($_SESSION['error']);
+            ?>
+        <?php endif; ?>
+        <?php if (isset($_SESSION['success'])) : ?>
+            notyf.success('<?php echo $_SESSION['success']; ?>');
+            <?php unset($_SESSION['success']);
+            ?>
+        <?php endif; ?>
+    </script>
 </body>
 </html>

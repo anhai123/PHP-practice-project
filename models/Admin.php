@@ -7,6 +7,14 @@ class Admin extends Base
 
     public function findById($id)
     {
+        $query=mysqli_query($this->conn,"SELECT * FROM user where id_user='" . $id . "'");
+       
+        while ($row = $query->fetch_assoc()) {
+       
+       $user = new E_user($row['id_user'],$row['firstName'], $row['lastName'], $row['email'], $row['phoneNumber'],$row['role'] );
+      
+   }
+       return $user;
     }
 
     function store($data)
@@ -41,7 +49,7 @@ class Admin extends Base
         $users = array();
         while ($row = $query->fetch_assoc()) {
             $data[] = $row;
-            $user = new E_user($row['id_user'], $row['firstName'], $row['lastName'], $row['email'], $row['phoneNumber']);
+            $user = new E_user($row['id_user'], $row['firstName'], $row['lastName'], $row['email'], $row['phoneNumber'], $row['role']);
             $users[] = $user;
         }
         return $users;

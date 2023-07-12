@@ -36,14 +36,16 @@ abstract class Base
             $query = mysqli_query($this->conn, "select * from `user` where email='{$email}' && password='{$password}'");
 
             if (mysqli_num_rows($query) == 0) {
-                $_SESSION['message'] = "Login Failed. User not Found!";
+                $_SESSION['error'] = "Login Failed. User not Found!";
                 header('location: ?mod=auth&act=viewLogin');
             } else {
                 $row = mysqli_fetch_array($query);
                 echo $row['role'];
-                setcookie("email", $row['email'], time() + (86400 * 30));
-                setcookie("password", $row['password'], time() + (86400 * 30));
-
+                if(isset($_POST['remember'])){
+                    setcookie("email", $row['email'], time() + (86400 * 30));
+                    setcookie("password", $row['password'], time() + (86400 * 30));
+                    }
+                $_SESSION['role'] = $row['admin'];
                 if (isset($_POSTp['remember'])) {
                     $row['id'] = 1;
                 }
@@ -58,13 +60,13 @@ abstract class Base
             }
         } else {
             header('location: ?mod=auth&act=viewlogin');
-            $_SESSION['message'] = "Please Login!";
+            $_SESSION['error'] = "Please Login!";
         }
     }
 
     public function register()
     {
-        session_start();
+        
 
         $fname = mysqli_real_escape_string($this->conn, $_POST['fname']);
         $lname = mysqli_real_escape_string($this->conn, $_POST['lname']);
@@ -72,26 +74,77 @@ abstract class Base
         $phone = mysqli_real_escape_string($this->conn, $_POST['phone']);
         $pass1 = mysqli_real_escape_string($this->conn, $_POST['pass1']);
         $pass2 = mysqli_real_escape_string($this->conn, $_POST['pass2']);
+        if (isset($_POST['fname'])) {
+            $array[] = "firstName='" . $fname . "'";
+        }
+        if (isset($_POST['lname'])) {
+            $array[] = "lastName='" . $lname . "'";
+        }
+        if (isset($_POST['email'])) {
+            $array[] = "email='" . $email . "'";
+        }
+        if (isset($_POST['phone'])) {
+            $array[] = "phoneNumber='" . $phone . "'";
+        }
+        if (count($array) == 0) {
+            die("no object modified or other errors");
+        }
 
-        if (!empty($fname) && !empty($lname) && !empty($email) && !empty($phone) && !empty($pass1) && !empty($pass2)) {
-            $sql = mysqli_query($this->conn, "select * from user where email='{$email}'");
+        $validate = [];
+        if ($fname == '') {
+            $validate['fname'] = 'First name is required';
+        }
+
+        if ($lname == '') {
+            $validate['lname'] = 'Last name is required';
+        }
+        if ($email == '') {
+            $validate['email'] = 'Email is required';
+        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $validate['email'] = 'Not a valid email';
+        } 
+       else  {
+            $sql = mysqli_query($this->conn, "select * from `user` where email='{$email}'");
             if (mysqli_num_rows($sql) > 0) {
-                $_SESSION['message'] = "Email already used";
-                header('location: ?mod=auth&act=viewRegister');
-            } else {
-                if ($pass1 == $pass2) {
-                    $pass1 = md5($pass1);
-                    $sql2 = "insert into user(firstName, lastName, email, password, phoneNumber, address, status)
-                        value('$fname', '$lname', '$email', '$pass1','$phone','',0)";
-                    $query = mysqli_query($this->conn, $sql2);
-                    $_SESSION['message'] = "Create Account Success!";
-                    header('location: ?mod=auth&act=viewLogin');
-                } else {
-                    $_SESSION['message'] = "Password not match!";
-                    header('location: ?mod=auth&act=viewRegister');
-                }
+                $validate['email'] = "Email already used";
+                
+            } 
+          }
+        if ($phone == '') {
+            $validate['phone'] = 'Phone number is required';
+        } else {
+            if (!preg_match('/^[0-9]{10}+$/', $phone)) {
+                $validate['phone'] = 'Phone number is not valid';
             }
         }
+
+        if ($pass1 != $pass2) {
+            $validate['password'] = 'Password is  not matched';
+        } 
+        else if(strlen($pass1) < 6) {
+            $validate['password'] = 'Password has at least 6 digit';
+        }
+        if (!empty($validate)) {
+            $_SESSION['validate'] = $validate;
+            $_SESSION['input'] = $_POST;
+            $_SESSION['error'] = 'User updated failed';
+            header('location: ?mod=auth&act=viewRegister');
+        } else {
+            if ($pass1 == $pass2) {
+                $pass1 = md5($pass1);
+                $sql2 = "insert into user(firstName, lastName, email, password, phoneNumber, address, status)
+                    value('$fname', '$lname', '$email', '$pass1','$phone','',0)";
+                $query = mysqli_query($this->conn, $sql2);
+                $_SESSION['success'] = "Create Account Success!";
+                header('location: ?mod=auth&act=viewLogin');
+            }
+             else {
+                $_SESSION['error'] = 'Create updated failed';
+                header('Location: ?mod=user&act=viewRegister');
+            }
+        }
+
+
     }
 
     public function logout()

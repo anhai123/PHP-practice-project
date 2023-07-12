@@ -1,5 +1,14 @@
 
+<?php
 
+$validate = $_SESSION['validate'] ?? [];
+
+unset($_SESSION['validate']);
+
+$string_version = implode( ",\n",$validate);
+// echo $_SESSION['error'];
+// echo implode("<br>",$validate);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +16,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <link rel="stylesheet" href="views/css/login.css">
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
     <title>Practice</title>
 </head>
 <body>
@@ -56,5 +67,24 @@
         </div>
     </div>
     <script src="views/javascript/showPass.js"></script>
+    <script>
+        const notyf = new Notyf({
+            position: {
+                x: 'right',
+                y: 'top',
+            },
+        });
+        // Check if there is an error message in the session
+        <?php if (isset($_SESSION['error'])) : ?>
+            notyf.error('<?php echo $_SESSION['error'];  echo "<br>"; echo implode("<br>",$validate); ?>');
+            <?php unset($_SESSION['error']);
+            ?>
+        <?php endif; ?>
+        <?php if (isset($_SESSION['success'])) : ?>
+            notyf.success('<?php echo $_SESSION['success']; ?>');
+            <?php unset($_SESSION['success']);
+            ?>
+        <?php endif; ?>
+    </script>
 </body>
 </html>

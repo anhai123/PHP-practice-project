@@ -27,23 +27,33 @@ class AdminController
     function delete()
     {
         if ($_POST['action'] == 'delete' && $_POST['id']) {
-
-            $status = $this->modelAdmin->delete($_POST['id']);
-            if ($status == true) {
-                $_SESSION['success'] = 'User deleted successfully';
-                $data = array(
-                    "message"	=> "Record Updated",	
-                    "status" => 1
-                );
-                echo json_encode($data);
-            } else {
-                $_SESSION['fail'] = 'User deleted failed';
-                $data = array(
-                    "message"	=> "Record Updated",	
-                    "status" => 0
-                );
-                echo json_encode($data);
+           $user =  $this->modelAdmin->findById($_POST['id']);
+            if ( $user->getRole() != 'admin') {
+                $status = $this->modelAdmin->delete($_POST['id']);
+                if ($status == true) {
+                    $_SESSION['success'] = 'User deleted successfully';
+                    $data = array(
+                        "message"	=> "Record deleted success",	
+                        "status" => 1
+                    );
+                    echo json_encode($data);
+                } else {
+                    $_SESSION['fail'] = 'User deleted failed';
+                    $data = array(
+                        "message"	=> "Record Updated",	
+                        "status" => 0
+                    );
+                    echo json_encode($data);
+                }
             }
+          else {
+            $_SESSION['error'] = 'Admin cant be deleted ';
+            $data = array(
+                "message"	=> "Record deleted fail",	
+                "status" => 0
+            );
+            echo json_encode($data);
+          }
         }
     }
 

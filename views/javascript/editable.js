@@ -40,10 +40,14 @@ $(document).ready(function () {
         dataType: "json",
         data: { id: empId, action: "delete" },
         success: function (response) {
-          // if (response.status == 1) {
-          //   window.location.href =
-          //     "http://localhost/PHP-practice-project/?mod=admin&act=viewAdminPage";
-          // }
+          if (response.status == 1) {
+            window.location.href =
+              "http://localhost/PHP-practice-project/?mod=admin&act=viewAdminPage";
+          }
+          if (response.status == 0) {
+            window.location.href =
+              "http://localhost/PHP-practice-project/?mod=admin&act=viewAdminPage";
+          }
         },
       });
     },

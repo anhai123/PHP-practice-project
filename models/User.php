@@ -8,7 +8,7 @@ class User extends Base
        
          while ($row = $query->fetch_assoc()) {
         
-        $user = new E_user($row['id_user'],$row['firstName'], $row['lastName'], $row['email'], $row['phoneNumber']);
+        $user = new E_user($row['id_user'],$row['firstName'], $row['lastName'], $row['email'], $row['phoneNumber'],$row['role'] );
        
     }
         return $user;

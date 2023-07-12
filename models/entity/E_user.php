@@ -5,13 +5,15 @@
         protected $lastName;
         protected $email;
         protected $phoneNumber;
+        protected $role;
 
-        function __construct($id,$firstName, $lastName, $email, $phoneNumber) {
+        function __construct($id,$firstName, $lastName, $email, $phoneNumber,  $role) {
             $this->id = $id;
             $this->firstName = $firstName;
             $this->lastName = $lastName;
             $this->email = $email;
             $this->phoneNumber = $phoneNumber;
+            $this->role = $role;
         }
         public function getId() {
             return $this->id;
@@ -29,7 +31,9 @@
         public function getPhoneNumber() {
             return $this->phoneNumber;
         }
-
+        public function getRole() {
+            return $this->role;
+        }
         public function setId($id) {
             $this->id = $id;
         }
@@ -48,5 +52,8 @@
 
         public function setphoneNumber($phoneNumber) {
             $this->phoneNumber = $phoneNumber;
+        }
+        public function setrole($role) {
+            $this->role = $role;
         }
     }
