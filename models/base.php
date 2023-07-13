@@ -28,7 +28,6 @@ abstract class Base
 
             $email = htmlspecialchars($_POST['email']);
             $password = htmlspecialchars($_POST['password']);
-
             if($_COOKIE['password']!=$password || $_COOKIE['email']!=$email){
                 $password=md5($password);
             }
@@ -37,6 +36,7 @@ abstract class Base
 
             if (mysqli_num_rows($query) == 0) {
                 $_SESSION['error'] = "Login Failed. User not Found!";
+                $_SESSION['input'] = $_POST;
                 header('location: ?mod=auth&act=viewLogin');
             } else {
                 $row = mysqli_fetch_array($query);

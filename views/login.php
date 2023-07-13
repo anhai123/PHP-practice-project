@@ -2,9 +2,9 @@
 <?php
 
 $validate = $_SESSION['validate'] ?? [];
-
+$input = $_SESSION['input'] ?? [];
 unset($_SESSION['validate']);
-
+unset($_SESSION['input']);
 $string_version = implode( ",\n",$validate);
 // echo $_SESSION['error'];
 // echo implode("<br>",$validate);
@@ -31,7 +31,8 @@ $string_version = implode( ",\n",$validate);
                     <input 
                         type="text" 
                         name="email" 
-                        value="<?php if (isset($_COOKIE["email"])){ echo $_COOKIE["email"]; }?>" 
+                        value="<?php if (isset($_COOKIE["email"])){ echo $_COOKIE["email"]; }
+                        else if(isset($input['email'])) {echo $input['email']; }?>" 
                         required
                     >
                 </div>
@@ -40,7 +41,7 @@ $string_version = implode( ",\n",$validate);
                     <input
                         type="password" 
                         name="password" 
-                        value="<?php if (isset($_COOKIE["password"])){echo $_COOKIE["password"];}?>"
+                        value="<?php if (isset($_COOKIE["password"])){echo $_COOKIE["password"];}  else if(isset($input['password'])) {echo $input['password'] ;}?>"
                         required
                     >
                 </div>
