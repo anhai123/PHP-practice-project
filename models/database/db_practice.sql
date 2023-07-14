@@ -6,6 +6,6 @@ CREATE TABLE `user` (
     `password` char(255) COLLATE utf8_unicode_ci DEFAULT NULL,
     `phoneNumber` char(255) COLLATE utf8_unicode_ci DEFAULT NULL,
     `address` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-    `status` int(1) DEFAULT NULL
-    `role` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'user',
+    `status` int(1) DEFAULT NULL,
+    `role` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

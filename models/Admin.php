@@ -18,11 +18,9 @@ class Admin extends Base
     }
 
     function store($data)
-    {
-    }
-    function edit($id, $data)
-    {
-        $updateField = implode(',', $data);
+    {}
+    function edit($id, $data) {
+    $updateField = implode(',', $data);
 
         if ($updateField && $id) {
             $sqlQuery = "UPDATE user SET $updateField WHERE id_user='" . $id . "'";
