@@ -12,6 +12,7 @@ body{
     justify-content: center;
     min-height: 100vh;
     background: #f7f7f7;
+    flex-direction: column;
 }
 .wrapper{
     background: #fff;
@@ -74,9 +75,7 @@ body{
     border: 1px solid #ccc;
     border-radius: 5px;
 }
-.form form .image input{
-    font-size: 17px;
-}
+
 .form form .button input{
     margin-top: 13px;
     height: 45px;
@@ -111,3 +110,17 @@ body{
 .form .link a:hover{
     text-decoration: underline;
 }
+
+.message{
+    justify-content: center;
+}
+.button-logout{
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+  } 
