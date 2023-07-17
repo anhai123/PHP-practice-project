@@ -36,7 +36,7 @@ abstract class Base
                     setcookie("email", $row['email'], time() + (86400 * 30));
                     setcookie("password", $row['password'], time() + (86400 * 30));
                     }
-                $_SESSION['role'] = $row['admin'];
+                $_SESSION['role'] = $row['role'];
                 if (isset($_POSTp['remember'])) {
                     $row['id'] = 1;
                 }

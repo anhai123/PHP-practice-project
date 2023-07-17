@@ -1,5 +1,5 @@
 <?php
-    if (!isset($_SESSION['id']) ||(trim ($_SESSION['id']) == '')) {
+    if (!isset($_SESSION['id']) ||(trim ($_SESSION['id']) == '') || $_SESSION['role'] != "admin" ) {
 		header('location: ?mod=auth&act=viewlogin');
 		exit();
 	}
