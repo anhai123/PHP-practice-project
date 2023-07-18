@@ -8,11 +8,19 @@ abstract class Base
         $db = new dbConnect();
         $this->conn = $db->getConnection();
     }
-    abstract function store($data);
+    
     abstract function edit($id, $data);
     abstract function delete($id);
     abstract function list();
     abstract function findById($id);
+    public function checkEmailDuplicate($email, $id)
+    {
+        $query = mysqli_query($this->conn, "select * from `user` where email='{$email}' and id_user <> '{$id}'");
+        if (mysqli_num_rows($query) > 0) {
+            return false;
+        }
+        return true;
+    }
     public function login()
     {
         if (isset($_POST['login'])) {
@@ -59,8 +67,8 @@ abstract class Base
     {
         
 
-        $fname = mysqli_real_escape_string($this->conn, $_POST['fname']);
-        $lname = mysqli_real_escape_string($this->conn, $_POST['lname']);
+        $fname = htmlspecialchars(mysqli_real_escape_string($this->conn, $_POST['fname']));
+        $lname = htmlspecialchars(mysqli_real_escape_string($this->conn, $_POST['lname']));
         $email = mysqli_real_escape_string($this->conn, $_POST['email']);
         $phone = mysqli_real_escape_string($this->conn, $_POST['phone']);
         $pass1 = mysqli_real_escape_string($this->conn, $_POST['pass1']);

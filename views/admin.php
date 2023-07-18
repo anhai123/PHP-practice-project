@@ -63,10 +63,10 @@ table, .table {
   <td><?php echo $user->getId(); ?></td>
 		   <td title="<?php if (isset($validate['firstName']) && $user->getId() == $input['id']  ) : ?>
                         <?php echo $validate['firstName']; ?>
-                    <?php endif; ?>"><?php echo $user->getFirstName(); ?></td>
+                    <?php endif; ?>"><?php echo htmlspecialchars($user->getFirstName()); ?></td>
 		   <td title="<?php if (isset($validate['lastName']) && $user->getId() == $input['id'] ) : ?>
                         <?php echo $validate['lastName']; ?>
-                    <?php endif; ?>"><?php echo $user->getLastName(); ?></td>               
+                    <?php endif; ?>"><?php echo htmlspecialchars($user->getLastName()); ?></td>               
 		   <td title="<?php if (isset($validate['email']) && $user->getId() == $input['id'] ) : ?>
                        <?php echo $validate['email']; ?>
                     <?php endif; ?>"><?php echo $user->getEmail(); ?></td>

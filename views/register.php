@@ -35,11 +35,11 @@ $string_version = implode( ",\n",$validate);
                 <div class="name-details">
                     <div class="field input">
                         <label>First Name</label>
-                        <input type="text" name="fname" placeholder="First Name" required  value="<?php echo isset($input['fname'])?$input['fname'] :''; ?>">
+                        <input type="text" name="fname" placeholder="First Name" required  value="<?php echo isset($input['fname'])?htmlspecialchars($input['fname'])  :''; ?>">
                     </div>
                     <div class="field input">
                         <label>Last Name</label>
-                        <input type="text" name="lname" placeholder="Last Name" required value="<?php echo isset($input['lname'])?$input['lname'] :''; ?>">
+                        <input type="text" name="lname" placeholder="Last Name" required value="<?php echo isset($input['lname'])?htmlspecialchars($input['lname'])  :''; ?>">
                     </div>
                 </div>
                 <div class="field input">

@@ -22,8 +22,8 @@ class UserController
         $array = array();
 
 
-        $fname = isset($_POST['fname']) && $_POST['fname'] == true ? trim($_POST['fname'], " ") : '';
-        $lname = isset($_POST['lname']) && $_POST['lname'] == true ? trim($_POST['lname'], " ") : '';
+        $fname = htmlspecialchars(isset($_POST['fname']) && $_POST['fname'] == true ? trim($_POST['fname'], " ") : '');
+        $lname = htmlspecialchars(isset($_POST['lname']) && $_POST['lname'] == true ? trim($_POST['lname'], " ") : '');
         $email = isset($_POST['email']) && $_POST['email'] == true ? trim($_POST['email'], " ") : '';
         $phone = isset($_POST['phone']) && $_POST['phone'] == true ? trim($_POST['phone'], " ") : '';
 
@@ -56,7 +56,8 @@ class UserController
             $validate['email'] = 'Email is required';
         } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $validate['email'] = 'Not a valid email';
-        } else {
+        } 
+        else {
             if (!$this->modelUser->checkEmailDuplicate($email, $_SESSION['id'])) {
                 $validate['email'] = 'Email has already exist';
             }

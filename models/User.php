@@ -13,8 +13,7 @@ class User extends Base
     }
         return $user;
     }
-     function store($data)
-     {}
+
     function edit($id, $data){
         $updateField = implode(',', $data);
 
