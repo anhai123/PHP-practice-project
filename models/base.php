@@ -8,7 +8,7 @@ abstract class Base
         $db = new dbConnect();
         $this->conn = $db->getConnection();
     }
-    
+
     abstract function edit($id, $data);
     abstract function delete($id);
     abstract function list();
@@ -27,9 +27,7 @@ abstract class Base
 
             $email = htmlspecialchars($_POST['email']);
             $password = htmlspecialchars($_POST['password']);
-            if($_COOKIE['password']!=$password || $_COOKIE['email']!=$email){
-                $password=md5($password);
-            }
+            $password = md5($password);
 
             $query = mysqli_query($this->conn, "select * from `user` where email='{$email}' && password='{$password}'");
 
@@ -40,10 +38,10 @@ abstract class Base
             } else {
                 $row = mysqli_fetch_array($query);
                 echo $row['role'];
-                if(isset($_POST['remember'])){
-                    setcookie("email", $row['email'], time() + (86400 * 30));
-                    setcookie("password", $row['password'], time() + (86400 * 30));
-                    }
+                if (isset($_POST['remember'])) {
+                    setcookie("email", $_POST['email'], time() + (86400 * 30));
+                    setcookie("password", $_POST['password'], time() + (86400 * 30));
+                }
                 $_SESSION['role'] = $row['role'];
                 if (isset($_POSTp['remember'])) {
                     $row['id'] = 1;
@@ -65,7 +63,7 @@ abstract class Base
 
     public function register()
     {
-        
+
 
         $fname = htmlspecialchars(mysqli_real_escape_string($this->conn, $_POST['fname']));
         $lname = htmlspecialchars(mysqli_real_escape_string($this->conn, $_POST['lname']));
@@ -101,14 +99,12 @@ abstract class Base
             $validate['email'] = 'Email is required';
         } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $validate['email'] = 'Not a valid email';
-        } 
-       else  {
+        } else {
             $sql = mysqli_query($this->conn, "select * from `user` where email='{$email}'");
             if (mysqli_num_rows($sql) > 0) {
                 $validate['email'] = "Email already used";
-                
-            } 
-          }
+            }
+        }
         if ($phone == '') {
             $validate['phone'] = 'Phone number is required';
         } else {
@@ -119,8 +115,7 @@ abstract class Base
 
         if ($pass1 != $pass2) {
             $validate['password'] = 'Password is  not matched';
-        } 
-        else if(strlen($pass1) < 6) {
+        } else if (strlen($pass1) < 6) {
             $validate['password'] = 'Password has at least 6 digit';
         }
         if (!empty($validate)) {
@@ -136,14 +131,11 @@ abstract class Base
                 $query = mysqli_query($this->conn, $sql2);
                 $_SESSION['success'] = "Create Account Success!";
                 header('location: ?mod=auth&act=viewLogin');
-            }
-             else {
+            } else {
                 $_SESSION['error'] = 'Create updated failed';
                 header('Location: ?mod=user&act=viewRegister');
             }
         }
-
-
     }
 
     public function logout()
