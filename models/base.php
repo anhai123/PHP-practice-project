@@ -77,14 +77,10 @@ abstract class Base
         if (isset($_POST['phone'])) {
             $array[] = "phoneNumber='" . $phone . "'";
         }
-        if (count($array) == 0) {
-            die("no object modified or other errors");
-        }
+
 
         $validate = [];
-        if ($fname == '') {
-            $validate['fname'] = 'First name is required';
-        }
+   
 
         if ($lname == '') {
             $validate['lname'] = 'Last name is required';
